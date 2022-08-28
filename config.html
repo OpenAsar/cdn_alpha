@@ -235,7 +235,7 @@ b {
         genAdv();
     }, () => muBranches.includes('sigfault') || electronVer !== undefined, () => electronVer !== undefined ]),
 
-    experimental([ 'Context Isolation', 'Enable/disable Context Isolation', x => {
+    /* experimental([ 'Context Isolation', 'Enable/disable Context Isolation', x => {
       if (x) muBranches = muBranches.filter(x => x !== 'no-isolation');
         else muBranches.push('no-isolation');
 
@@ -245,7 +245,7 @@ b {
       Native.set(config);
 
       genAdv();
-    }, () => !muBranches.includes('no-isolation'), () => electronVer === undefined ])
+    }, () => !muBranches.includes('no-isolation'), () => electronVer === undefined ]) */
   ];
 
   const makeSwitch = (listener, initial = false, disabled = false) => {
