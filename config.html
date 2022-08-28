@@ -1,3 +1,5 @@
+<title>OpenAsar Config</title>
+
 <h1>OpenAsar Config</h1>
 <h2><img src="https://twitter.github.io/twemoji/v/14.0.0/svg/1f44b.svg"> Welcome to OpenAsar, you can configure its features here</h2>
 <div id="container"></div>
@@ -7,7 +9,11 @@
   <button id="b_close">Close</button>
 </footer>
 
+<svg id="b_advanced" aria-hidden="true" role="img" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M19.738 10H22V14H19.739C19.498 14.931 19.1 15.798 18.565 16.564L20 18L18 20L16.565 18.564C15.797 19.099 14.932 19.498 14 19.738V22H10V19.738C9.069 19.498 8.203 19.099 7.436 18.564L6 20L4 18L5.436 16.564C4.901 15.799 4.502 14.932 4.262 14H2V10H4.262C4.502 9.068 4.9 8.202 5.436 7.436L4 6L6 4L7.436 5.436C8.202 4.9 9.068 4.502 10 4.262V2H14V4.261C14.932 4.502 15.797 4.9 16.565 5.435L18 3.999L20 5.999L18.564 7.436C19.099 8.202 19.498 9.069 19.738 10ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z"></path></svg>
+
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
+
   :root {
     --background-primary: #36393f;
     --background-secondary: #2f3136;
@@ -17,8 +23,6 @@
     --foreground-primary: #fff;
     --foreground-muted: #92969d;
   }
-
-  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500;600&display=swap');
 
   * {
     font-family: 'Roboto', sans-serif;
@@ -40,6 +44,15 @@
 
 .switch.on {
   background-color: var(--accent);
+}
+
+.switch.disabled {
+  background-color: var(--foreground-muted);
+  cursor: unset;
+}
+
+.switch.disabled * {
+  cursor: unset;
 }
 
 .switch, .switch div {
@@ -84,7 +97,7 @@
 #container > div > :first-child {
   margin-bottom: 4px;
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 #container > div > :nth-child(2) {
@@ -120,7 +133,7 @@ button {
   border: 0;
   padding: 6px 30px;
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 700;
   border-radius: 6px;
   cursor: pointer;
 }
@@ -150,7 +163,15 @@ svg {
 }
 
 b {
-  font-weight: 600;
+  font-weight: 700;
+}
+
+#b_advanced {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+
+  cursor: pointer;
 }
 </style>
 
@@ -165,26 +186,81 @@ b {
 
   const config = Native.get();
   // const config = {};
-  const toggles = [
-    [ 'Focus', 'Which aspect of the client to focus on', 'cmdPreset', [ 'performance', 'battery life', 'balanced' ], config.cmdPreset ],
+  const mainSettings = [
+    [ 'Focus', 'Which aspect of the client to focus on', 'cmdPreset', [ 'performance', 'battery life', 'balanced' ], () => config.cmdPreset ],
     [ 'No Track', 'Disables Discord\'s tracking / analytics / telemetry (Sentry, science)', 'noTrack', true ],
     [ 'Splash Theming', 'Themes splash screen the same as your client mod\'s', 'themeSync', true ],
     experimental([ 'Quickstart', 'Makes Discord start faster by skipping some steps like update checking on start', 'quickstart', false ]),
     experimental([ 'Multi Instance', 'Allows Discord to have multiple instances / windows open at once', 'multiInstance', false ]),
   ];
 
-  const makeSwitch = (listener, initial = false) => {
+  let muEndpoint = config.muEndpoint ?? 'https://mu.openasar.dev/';
+  let muBranches = muEndpoint.split('/').pop().split('+').filter(x => x);
+
+  const muAliases = {
+    'electron-latest': 'electron20',
+    'electron-alpha': 'electron21'
+  };
+
+  let electronVer = muBranches.find(x => x.startsWith('electron'));
+  electronVer = (muAliases[electronVer] ?? electronVer)?.replace('electron', '');
+
+  console.log(electronVer);
+
+  const advancedSettings = [
+    experimental([ 'Electron', 'Switch Electron to a custom version', x => {
+      const ver = x.split(' ')[0];
+      electronVer = ver === 'Discord' ? undefined : ver;
+
+      muBranches = muBranches.filter(x => !x.startsWith('electron'));
+      if (ver !== 'Discord') muBranches.push('electron' + ver);
+
+      muEndpoint = muEndpoint.split('/').slice(0, -1).join('/') + '/' + muBranches.join('+');
+
+      config.muEndpoint = muEndpoint;
+      Native.set(config);
+
+      genAdv();
+    }, [ '21 (alpha)', '20 (latest)', '16', '13', 'Discord' ], () => electronVer ?? 'Discord' ]),
+
+    experimental([ 'Signature Bypass', 'Bypass signature checks for some features (Krisp)', x => {
+      if (x) muBranches = muBranches.filter(x => x !== 'sigfault');
+        else muBranches.push('sigfault');
+
+        muEndpoint = muEndpoint.split('/').slice(0, -1).join('/') + '/' + muBranches.join('+');
+
+        config.muEndpoint = muEndpoint;
+        Native.set(config);
+
+        genAdv();
+    }, () => muBranches.includes('sigfault') || electronVer !== undefined, () => electronVer !== undefined ]),
+
+    experimental([ 'Context Isolation', 'Enable/disable Context Isolation', x => {
+      if (x) muBranches = muBranches.filter(x => x !== 'no-isolation');
+        else muBranches.push('no-isolation');
+
+      muEndpoint = muEndpoint.split('/').slice(0, -1).join('/') + '/' + muBranches.join('+');
+
+      config.muEndpoint = muEndpoint;
+      Native.set(config);
+
+      genAdv();
+    }, () => !muBranches.includes('no-isolation'), () => electronVer === undefined ])
+  ];
+
+  const makeSwitch = (listener, initial = false, disabled = false) => {
     const switchEl = document.createElement('label');
-    switchEl.className = 'switch';
+    switchEl.className = 'switch' + (disabled ? ' disabled' : '');
     if (initial) switchEl.classList.add('on');
-    
+
     const switchInputChildEl = document.createElement('input');
     switchInputChildEl.type = 'checkbox';
     switchInputChildEl.checked = initial;
-    
-    switchInputChildEl.onchange = () => {
+    switchInputChildEl.disabled = disabled;
+
+    switchInputChildEl.onchange = disabled ? () => {} : () => {
       const value = switchInputChildEl.checked;
-      
+
       setTimeout(() => {
         if (value) switchEl.classList.add('on');
         else switchEl.classList.remove('on');
@@ -192,12 +268,12 @@ b {
 
       listener(value);
     };
-    
+
     switchEl.appendChild(switchInputChildEl);
-    
+
     const switchDivChildEl = document.createElement('div');
     switchEl.appendChild(switchDivChildEl);
-    
+
     return switchEl;
   };
 
@@ -209,7 +285,7 @@ b {
       el.textContent = opt[0].toUpperCase() + opt.slice(1);
       el.value = opt;
 
-      if (opt === def) el.selected = true;
+      if (opt.startsWith(def)) el.selected = true;
 
       dropdownEl.append(el);
     }
@@ -222,6 +298,9 @@ b {
   };
 
   const makeItem = ([ name, desc, key, def, def2 ]) => {
+    if (typeof def === 'function') def = def();
+    if (typeof def2 === 'function') def2 = def2();
+
     const el = document.createElement('div');
 
     const nameEl = document.createElement('div');
@@ -236,13 +315,15 @@ b {
       'balanced': 'balanced'
     };
 
+    console.log(name, def2);
+
     const switchEl = typeof def === 'boolean' ? makeSwitch((v) => {
       config[key] = v;
       Native.set(config);
-    }, config[key] ?? def) : makeDropdown((v) => {
+    }, config[key] ?? def, def2 === true) : makeDropdown(typeof key === 'function' ? key : v => {
       config[key] = lookup[v] ?? v;
       Native.set(config);
-    }, def, Object.keys(lookup)[Object.values(lookup).indexOf(def2)]);
+    }, def, key === 'cmdPreset' ? Object.keys(lookup)[Object.values(lookup).indexOf(def2)] : def2 );
 
     nameEl.append(switchEl);
     el.append(nameEl, descEl);
@@ -250,8 +331,29 @@ b {
     return el;
   };
 
-  container.append(...toggles.map(makeItem));
+  container.append(...mainSettings.map(makeItem));
 
   b_restart.onclick = () => Native.restart();
   b_close.onclick = () => window.close();
+
+  const genAdv = () => {
+    container.innerHTML = '';
+    container.append(...advancedSettings.map(makeItem));
+  };
+
+  let oldH2;
+  b_advanced.onclick = () => {
+    const advanced = !container.classList.contains('advanced'); // to show advanced or main
+    if (advanced) {
+      container.classList.add('advanced');
+      oldH2 = document.querySelector('h2').innerHTML;
+      document.querySelector('h2').innerHTML = `<img src="https://twitter.github.io/twemoji/v/14.0.0/svg/1f9ea.svg"> Mu Settings - need to restart after changes`;
+    } else {
+      container.classList.remove('advanced');
+      document.querySelector('h2').innerHTML = oldH2;
+    }
+
+    container.innerHTML = '';
+    container.append(...(advanced ? advancedSettings : mainSettings).map(makeItem));
+  };
 </script>
