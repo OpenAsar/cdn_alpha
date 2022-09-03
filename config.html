@@ -223,7 +223,7 @@ b {
       genAdv();
     }, [ '21 (alpha)', '20 (latest)', '17 (same)', '16', 'Discord' ], () => electronVer ?? 'Discord' ]),
 
-    experimental([ 'Signature Bypass', 'Bypass signature checks for some features (Krisp)', x => {
+    /* experimental([ 'Signature Bypass', 'Bypass signature checks for some features (Krisp)', x => {
       if (x) muBranches = muBranches.filter(x => x !== 'sigfault');
         else muBranches.push('sigfault');
 
@@ -235,7 +235,7 @@ b {
         genAdv();
     }, () => muBranches.includes('sigfault') || electronVer !== undefined, () => electronVer !== undefined ]),
 
-    /* experimental([ 'Context Isolation', 'Enable/disable Context Isolation', x => {
+    experimental([ 'Context Isolation', 'Enable/disable Context Isolation', x => {
       if (x) muBranches = muBranches.filter(x => x !== 'no-isolation');
         else muBranches.push('no-isolation');
 
