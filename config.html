@@ -195,7 +195,7 @@ b {
   ];
 
   let muEndpoint = config.muEndpoint ?? 'https://mu.openasar.dev/';
-  let muBranches = muEndpoint.split('/').pop().split('+').filter(x => x);
+  let muBranches = muEndpoint.split('/').pop().split('+').filter(x => x && !x.includes('.'));
 
   const muAliases = {
     'electron-latest': 'electron20',
