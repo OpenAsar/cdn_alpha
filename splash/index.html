@@ -249,7 +249,7 @@
         const el = document.createElement('div');
 
         const text = document.createElement('div');
-        text.textContent = x.replace('discord_', '').replace('_', ' ');
+        text.textContent = x.replace('discord_', '').replace('open_', '').replaceAll('_', ' ');
 
         const detail = document.createElement('div');
         detail.textContent = `${(current / 1024 / 1024).toFixed(2)}/${(total / 1024 / 1024).toFixed(2)}MB`;
