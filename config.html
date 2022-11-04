@@ -1,15 +1,20 @@
 <title>OpenAsar Config</title>
 
-<h1>OpenAsar Config</h1>
-<h2><img src="https://twitter.github.io/twemoji/v/14.0.0/svg/1f44b.svg"> Welcome to OpenAsar, you can configure its features here</h2>
+<!-- <h2><img src="https://twitter.github.io/twemoji/v/14.0.0/svg/1f44b.svg"> Welcome to OpenAsar, you can configure its features here</h2> -->
+
+<header>
+  <h1>OpenAsar Config</h1>
+  <div id="t_settings" class="active">Settings</div>
+  <div id="t_theming">CSS</div>
+  <div id="t_mu">Mu <img src="https://twitter.github.io/twemoji/v/14.0.0/svg/1f404.svg"></div>
+</header>
+
 <div id="container"></div>
 
 <footer>
   <button id="b_restart">Restart</button>
   <button id="b_close">Close</button>
 </footer>
-
-<svg id="b_advanced" aria-hidden="true" role="img" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M19.738 10H22V14H19.739C19.498 14.931 19.1 15.798 18.565 16.564L20 18L18 20L16.565 18.564C15.797 19.099 14.932 19.498 14 19.738V22H10V19.738C9.069 19.498 8.203 19.099 7.436 18.564L6 20L4 18L5.436 16.564C4.901 15.799 4.502 14.932 4.262 14H2V10H4.262C4.502 9.068 4.9 8.202 5.436 7.436L4 6L6 4L7.436 5.436C8.202 4.9 9.068 4.502 10 4.262V2H14V4.261C14.932 4.502 15.797 4.9 16.565 5.435L18 3.999L20 5.999L18.564 7.436C19.099 8.202 19.498 9.069 19.738 10ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z"></path></svg>
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
@@ -24,158 +29,216 @@
     --foreground-muted: #92969d;
   }
 
-  * {
+  body, select, option, button {
     font-family: 'Roboto', sans-serif;
     color: var(--foreground-primary);
     user-select: none;
   }
 
   body {
-    margin: 4vh 4vw;
+    margin: 3vh 3vw;
     background: var(--background-primary);
-    /* -webkit-app-region: drag; */
+
+    -webkit-app-region: drag;
   }
 
-.switch input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-}
+  header {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    margin-bottom: 20px;
+  }
 
-.switch.on {
-  background-color: var(--accent);
-}
+  header > h1 {
+    margin-right: 10vw;
+  }
 
-.switch.disabled {
-  background-color: var(--foreground-muted);
-  cursor: unset;
-}
+  header > div:not(:last-child) {
+    margin-right: 8vw;
+  }
 
-.switch.disabled * {
-  cursor: unset;
-}
+  header > div {
+    font-weight: 500;
+    font-size: 22px;
+    cursor: pointer;
 
-.switch, .switch div {
-  border-radius: 1em;
-}
+    color: #ddd;
+    transition: .5s color;
+  }
 
-.switch {
-  transition: background-color .2s;
+  header > div::after {
+    content: '';
+    display: block;
+    margin: auto;
+    margin-top: 2px;
+    height: 2px;
+    width: 0px;
+    background: transparent;
+    transition: width .5s ease, background-color .5s ease;
+  }
 
-  display: inline-block;
-  font-size: 18px;
-  height: 18.5px;
-  width: 36px;
-  background-color: var(--background-tertiary);
+  header > div:hover {
+    color: #fff;
+  }
 
-  display: flex;
-  align-items: center;
+  header > div.active {
+    color: #fff;
+  }
 
-  cursor: pointer;
-}
+  header > div:hover::after {
+    width: 100%;
+    background: var(--accent);
+  }
 
-.switch div {
-  margin-left: 2px;
+  header > div.active::after {
+    width: 100%;
+    background: var(--accent);
+  }
 
-  height: 13.5px;
-  width: 14px;
-  background: #ddd;
-  box-shadow: 0 0.1em 0.3em rgba(0, 0, 0, 0.4);
-  transition: all 300ms;
-}
+  .switch input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
 
-.switch input:checked + div {
-  transform: translateX(17px);
-}
+  .switch.on {
+    background-color: var(--accent);
+  }
 
-#container > div {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 30px;
-}
+  .switch.disabled {
+    background-color: var(--foreground-muted);
+    cursor: unset;
+  }
 
-#container > div > :first-child {
-  margin-bottom: 4px;
-  font-size: 18px;
-  font-weight: 700;
-}
+  .switch.disabled * {
+    cursor: unset;
+  }
 
-#container > div > :nth-child(2) {
-  color: var(--foreground-muted);
-  font-size: 14px;
-}
+  .switch, .switch div {
+    border-radius: 1em;
+  }
 
-select, option {
-  background: var(--background-secondary);
-  border: 2px solid var(--background-tertiary);
-  padding: 3px;
-  font-weight: 500;
-  width: 110px;
-  border-radius: 4px;
-}
+  .switch {
+    transition: background-color .2s;
 
-.switch, select {
-  float: right;
-  line-height: 18px;
-}
+    display: inline-block;
+    font-size: 18px;
+    height: 18.5px;
+    width: 36px;
+    background-color: var(--background-tertiary);
 
-footer {
-  display: flex;
-  position: absolute;
-  bottom: 5%;
-  left: 5%;
-  width: 90%;
-  justify-content: space-around;
-}
+    display: flex;
+    align-items: center;
 
-button {
-  background: var(--accent);
-  border: 0;
-  padding: 6px 30px;
-  font-size: 20px;
-  font-weight: 700;
-  border-radius: 6px;
-  cursor: pointer;
-}
+    cursor: pointer;
+  }
 
-h1 {
-  font-size: 22px;
-  margin: 0;
-}
+  .switch div {
+    margin-left: 2px;
 
-h2 {
-  font-size: 15px;
-  font-weight: 500;
-  margin-bottom: 30px;
+    height: 13.5px;
+    width: 14px;
+    background: #ddd;
+    box-shadow: 0 0.1em 0.3em rgba(0, 0, 0, 0.4);
+    transition: all 300ms;
+  }
 
-  color: #bcbdbe;
-}
+  .switch input:checked + div {
+    transform: translateX(17px);
+  }
 
-img {
-  width: 18px;
-  position: relative;
-  top: 3px;
-}
+  #container > div {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 30px;
+  }
 
-svg {
-  position: relative;
-  top: 4px;
-}
+  #container > div > :first-child {
+    margin-bottom: 4px;
+    font-size: 18px;
+    font-weight: 700;
+  }
 
-b {
-  font-weight: 700;
-}
+  #container > div > :nth-child(2) {
+    color: var(--foreground-muted);
+    font-size: 14px;
+  }
 
-#b_advanced {
-  position: absolute;
-  top: 12px;
-  right: 12px;
+  select, option {
+    background: var(--background-secondary);
+    border: 2px solid var(--background-tertiary);
+    padding: 3px;
+    font-weight: 500;
+    width: 110px;
+    border-radius: 4px;
+  }
 
-  cursor: pointer;
-}
+  .switch, select {
+    float: right;
+    line-height: 18px;
+  }
+
+  footer {
+    display: flex;
+    position: absolute;
+    bottom: 4vh;
+    left: 5%;
+    width: 90%;
+    justify-content: space-around;
+  }
+
+  button {
+    background: var(--accent);
+    border: 0;
+    padding: 6px 30px;
+    font-size: 20px;
+    font-weight: 700;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  h1 {
+    font-size: 20px;
+    margin: 0;
+  }
+
+  h2 {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 16px;
+    margin-top: 6px;
+
+    color: #bcbdbe;
+  }
+
+  img {
+    width: 18px;
+    position: relative;
+    top: 3px;
+  }
+
+  svg {
+    position: relative;
+    top: 4px;
+  }
+
+  b {
+    font-weight: 700;
+  }
+
+  header > div, .switch, button, select, option, .monaco-editor {
+    -webkit-app-region: none;
+  }
 </style>
 
 <script>
+  const debounce = (handler, timeout) => {
+    let timer;
+    return (...args) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => handler(...args), timeout);
+    };
+  };
 
   const experimental = (arr) => {
     arr[0] = `<svg width="22" height="22" viewBox="0 0 16 16"><path style="fill: currentColor" fill-rule="evenodd" d="M5 5.782V2.5h-.25a.75.75 0 0 1 0-1.5h6.5a.75.75 0 0 1 0 1.5H11v3.282l3.666 5.76C15.619 13.04 14.543 15 12.767 15H3.233c-1.776 0-2.852-1.96-1.899-3.458L5 5.782zM9.5 2.5h-3V6a.75.75 0 0 1-.117.403L4.73 9h6.54L9.617 6.403A.75.75 0 0 1 9.5 6V2.5zm-6.9 9.847L3.775 10.5h8.45l1.175 1.847a.75.75 0 0 1-.633 1.153H3.233a.75.75 0 0 1-.633-1.153z"/></svg> ` + arr[0];
@@ -188,7 +251,8 @@ b {
   // const config = {};
   const mainSettings = [
     [ 'Focus', 'Which aspect of the client to focus on', 'cmdPreset', [ 'performance', 'battery life', 'balanced' ], () => config.cmdPreset ],
-    [ 'No Track', 'Disables Discord\'s tracking / analytics / telemetry (Sentry, science)', 'noTrack', true ],
+    [ 'No Track', 'Disables Discord\'s added tracking / analytics / telemetry (Sentry, science)', 'noTrack', true ],
+    [ 'Disable Typing', 'Disables showing other people that you are typing', 'noTyping', false ],
     [ 'Splash Theming', 'Themes splash screen the same as your client mod\'s', 'themeSync', true ],
     experimental([ 'Quickstart', 'Makes Discord start faster by skipping some steps like update checking on start', 'quickstart', false ]),
     experimental([ 'Multi Instance', 'Allows Discord to have multiple instances / windows open at once', 'multiInstance', false ]),
@@ -197,18 +261,12 @@ b {
   let muEndpoint = config.muEndpoint ?? 'https://mu.openasar.dev/';
   let muBranches = muEndpoint.split('/').pop().split('+').filter(x => x && !x.includes('.'));
 
-  const muAliases = {
-    'electron-latest': 'electron20',
-    'electron-alpha': 'electron21'
-  };
-
   let electronVer = muBranches.find(x => x.startsWith('electron'));
-  electronVer = (muAliases[electronVer] ?? electronVer)?.replace('electron', '');
+  // electronVer = (muAliases[electronVer] ?? electronVer)?.replace('electron', '');
+  electronVer = electronVer?.replace('electron', '');
 
-  console.log(electronVer);
-
-  const advancedSettings = [
-    experimental([ 'Electron', 'Switch Electron to a custom version', x => {
+  const muSettings = [
+    experimental([ 'Electron', 'Replace Discord\'s Electron build', x => {
       const ver = x.split(' ')[0];
       electronVer = ver === 'Discord' ? undefined : ver;
 
@@ -220,8 +278,8 @@ b {
       config.muEndpoint = muEndpoint;
       Native.set(config);
 
-      genAdv();
-    }, [ '21 (alpha)', '20 (latest)', '17 (same)', '16', 'Discord' ], () => electronVer ?? 'Discord' ]),
+      buildSettings(muSettings);
+    }, [ '22 (alpha)', '21 (latest)', 'Discord' ], () => electronVer ?? 'Discord' ]),
 
     /* experimental([ 'Signature Bypass', 'Bypass signature checks for some features (Krisp)', x => {
       if (x) muBranches = muBranches.filter(x => x !== 'sigfault');
@@ -232,7 +290,7 @@ b {
         config.muEndpoint = muEndpoint;
         Native.set(config);
 
-        genAdv();
+        buildSettings(muSettings);
     }, () => muBranches.includes('sigfault') || electronVer !== undefined, () => electronVer !== undefined ]),
 
     experimental([ 'Context Isolation', 'Enable/disable Context Isolation', x => {
@@ -244,7 +302,7 @@ b {
       config.muEndpoint = muEndpoint;
       Native.set(config);
 
-      genAdv();
+      buildSettings(muSettings);
     }, () => !muBranches.includes('no-isolation'), () => electronVer === undefined ]) */
   ];
 
@@ -315,8 +373,6 @@ b {
       'balanced': 'balanced'
     };
 
-    console.log(name, def2);
-
     const switchEl = typeof def === 'boolean' ? makeSwitch((v) => {
       config[key] = v;
       Native.set(config);
@@ -336,24 +392,68 @@ b {
   b_restart.onclick = () => Native.restart();
   b_close.onclick = () => window.close();
 
-  const genAdv = () => {
+  const buildSettings = x => {
     container.innerHTML = '';
-    container.append(...advancedSettings.map(makeItem));
+    container.append(...x.map(makeItem));
   };
 
-  let oldH2;
-  b_advanced.onclick = () => {
-    const advanced = !container.classList.contains('advanced'); // to show advanced or main
-    if (advanced) {
-      container.classList.add('advanced');
-      oldH2 = document.querySelector('h2').innerHTML;
-      document.querySelector('h2').innerHTML = `<img src="https://twitter.github.io/twemoji/v/14.0.0/svg/1f9ea.svg"> Mu Settings - need to restart after changes`;
-    } else {
-      container.classList.remove('advanced');
-      document.querySelector('h2').innerHTML = oldH2;
-    }
+  const loadScript = async x => {
+    const el = document.createElement('script');
+    el.src = x;
+    document.head.append(el);
+
+    await new Promise(res => el.onload = res);
+  };
+
+  const setActiveTab = el => {
+    document.querySelectorAll('[id^="t_"]').forEach(x => x.classList.remove('active'));
+    el.classList.add('active');
+  };
+
+  t_settings.onclick = () => {
+    setActiveTab(t_settings);
+    buildSettings(mainSettings);
+  };
+
+  t_theming.onclick = async () => {
+    setActiveTab(t_theming);
 
     container.innerHTML = '';
-    container.append(...(advanced ? advancedSettings : mainSettings).map(makeItem));
+
+    if (!window.monaco) {
+      await loadScript('monaco-editor/min/vs/loader.js');
+      // await new Promise(res => setTimeout(res, 500));
+
+      require.config({ paths: { vs: 'monaco-editor/min/vs' } });
+			await new Promise(res => require(['vs/editor/editor.main'], res));
+    }
+
+    const monacoContainer = document.createElement('div');
+    monacoContainer.style.width = '100%';
+    monacoContainer.style.height = '75vh';
+    container.appendChild(monacoContainer);
+
+    window.editor = monaco.editor.create(monacoContainer, {
+      value: config.css || `/* Add your own Custom CSS here.
+Have a theme you want to use? Copy and paste the contents here.
+You need to restart (click the restart button) after changing. */`,
+      language: 'css',
+      theme: 'vs-dark',
+      minimap: {
+        enabled: false
+      }
+    });
+
+    const save = debounce(() => Native.set(config), 500);
+
+    editor.getModel().onDidChangeContent(e => {
+      config.css = editor.getValue();
+      save();
+    });
+  };
+
+  t_mu.onclick = () => {
+    setActiveTab(t_mu);
+    buildSettings(muSettings);
   };
 </script>
